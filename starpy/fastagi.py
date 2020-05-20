@@ -182,12 +182,12 @@ class FastAGIProtocol(basic.LineOnlyReceiver):
 
     def secondResultItem(self, result):
         """(Internal) Retrieve the second item on the result-line"""
-        return result.split(' ', 1)[1]
+        return result.split(b' ', 1)[1]
 
     def resultPlusTimeoutFlag(self, resultLine):
         """(Internal) Result followed by optional flag declaring timeout"""
         try:
-            digits, timeout = resultLine.split(' ', 1)
+            digits, timeout = resultLine.split(b' ', 1)
             return digits.strip(), True
         except ValueError as err:
             return resultLine.strip(), False
@@ -207,14 +207,14 @@ class FastAGIProtocol(basic.LineOnlyReceiver):
         Also watch for failure-on-load problems
         """
         try:
-            digit, exitType, endposStuff = resultLine.split(' ', 2)
+            digit, exitType, endposStuff = resultLine.split(b' ', 2)
         except ValueError as err:
             pass
         else:
             digit = int(digit)
             exitType = exitType.strip('()')
             endposStuff = endposStuff.strip()
-            if endposStuff.startswith('endpos='):
+            if endposStuff.startswith(b'endpos='):
                 endpos = int(endposStuff[7:].strip())
                 return digit, exitType, endpos
         raise ValueError("Unexpected result on streaming completion: %r" %
@@ -226,13 +226,13 @@ class FastAGIProtocol(basic.LineOnlyReceiver):
         Also watch for failure-on-load problems
         """
         try:
-            digit, endposStuff = resultLine.split(' ', 1)
+            digit, endposStuff = resultLine.split(b' ', 1)
         except ValueError as err:
             pass
         else:
             digit = int(digit)
             endposStuff = endposStuff.strip()
-            if endposStuff.startswith('endpos='):
+            if endposStuff.startswith(b'endpos='):
                 endpos = int(endposStuff[7:].strip())
                 if endpos == skipMS:
                     # "likely" an error according to the wiki,
@@ -326,12 +326,12 @@ class FastAGIProtocol(basic.LineOnlyReceiver):
 
         Asterisk 12 introduces 'endpos=' to the result line.
         """
-        parts = resultLine.split(' ', 1)
+        parts = resultLine.split(b' ', 1)
         result = int(parts[0])
         endpos = None  # Default if endpos isn't specified
         if len(parts) == 2:
             endposStuff = parts[1].strip()
-            if endposStuff.startswith('endpos='):
+            if endposStuff.startswith(b'endpos='):
                 endpos = int(endposStuff[7:])
             else:
                 log.error("Unexpected response to 'control stream file': %s",
@@ -663,7 +663,7 @@ class FastAGIProtocol(basic.LineOnlyReceiver):
             command += ' s=%s' % (silence,)
 
         def onResult(resultLine):
-            value, type, endpos = resultLine.split(' ')
+            value, type, endpos = resultLine.split(b' ')
             type = type.strip()[1:-1]
             endpos = int(endpos.split('=')[1])
             return (value, type, endpos)
