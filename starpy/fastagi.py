@@ -212,7 +212,7 @@ class FastAGIProtocol(basic.LineOnlyReceiver):
             pass
         else:
             digit = int(digit)
-            exitType = exitType.strip('()')
+            exitType = exitType.strip(b'()')
             endposStuff = endposStuff.strip()
             if endposStuff.startswith(b'endpos='):
                 endpos = int(endposStuff[7:].strip())
