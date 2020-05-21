@@ -853,7 +853,7 @@ class FastAGIProtocol(basic.LineOnlyReceiver):
         returns deferred integer result code
         """
         value = '''"%s"''' % (str(value).replace('"', ''),)
-        command = 'SET VARIABLE "%s" "%s"' % (variable, value)
+        command = 'SET VARIABLE "%s" %s' % (variable, value)
         return self.sendCommand(command).addCallback(self.resultAsInt)
 
     def streamFile(self, filename, escapeDigits="", offset=0):
